@@ -45,31 +45,36 @@ class ArticleAnalyzer(EutilsAnalyzer):
         # self.pmid = None
 
         for article in root.xpath('//PubmedArticle'):
-            
             pmid = article.findtext('.//PMID')
             title = article.findtext('.//ArticleTitle')
             language = article.findtext('.//Language')
+            publishInf = article.find('.//PubDate')
+            publishDate = ""
+            if publishInf is not None:
+                year = publishInf.findtext('Year')
+                month = publishInf.findtext('Month')
+                day = publishInf.findtext('Day')
+                publishDate = "-".join(filter(None, [year, month, day]))
+
             authors = []
+            emails = set()
             for author in article.findall('.//Author'):
                 lastName = author.findtext('LastName')
                 firstName = author.findtext('ForeName')
                 initials = author.findtext('Initials')
-
-                Researcher()
-
-
-            authors = [a.findtext('ForeName') + ' ' + a.findtext('LastName') 
-                    for a in article.findall('.//Author') if a.findtext('LastName')]
-            print(pmid,title,authors,article.findall('.//Affiliation'))
-            record = ArticleRecord()
+                email = None
+                affiliation = author.findtext('.//Affiliation')
+                if affiliation:
+                    match = re.search(r'[\w\.-]+@[\w\.-]+\.\w+',affiliation)
+                    if match:
+                        email = match.group(0)
+                        emails.add(email)
+                
+                researcher = Researcher(lastName,firstName,initials,affiliation,email)
+                authors.append(researcher)
+                
+            record = ArticleRecord(title,language,publishDate,emails,authors,pmid)
+            self.result.add_article_record(record)
             
-
-
-        # for i in response:
-        #     print(i)
-        # print(response)
-        self.result.add_article_record(response)
-        #do the parsing here
-
 
     

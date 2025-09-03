@@ -3,14 +3,18 @@ from entrezpy.base.result import EutilsResult
 
 class ArticleRecord:
     # Class to store a single article
-    def __init__(self):
-        self.title = None
-        self.language = None
-        self.date = None
-        self.emails = set()
-        self.people = []
-        self.pmid = None
-
+    def __init__(self, title, language, date, emails, people, pmid):
+        self.title = title
+        self.language = language
+        self.date = date
+        self.emails = emails
+        self.people = people
+        self.pmid = pmid
+    
+    def __repr__(self):
+       kvps = [f"{k}={v}" for k, v in vars(self).items()]
+       return f"{type(self).__name__}({', '.join(kvps)})"
+    
 
 class ArticleResult(EutilsResult):
     def __init__(self, response, request):
