@@ -1,0 +1,17 @@
+[project]
+name = "pubmed-author-finder"
+version = "0.1.0"
+description = "Find published researchers on pubmed"
+
+authors = [{name="Nitahi Escolar Bach", email="nitahieb@gmail.com"}]
+requires-python = ">=3.10"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+entrezpy = "*"
+lxml = "*"
+pytest = "^8.0"
+
+[build-system]
+requires = ["setuptools>=42","wheel"]
+build-backend = "setuptools.build_meta"
