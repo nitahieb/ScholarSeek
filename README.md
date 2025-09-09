@@ -6,8 +6,13 @@ PubMed Author Finder helps you quickly find research papers on any topic and giv
 
 ---
 
-##  What Is It (and Why You’ll Want It)
+##  What Is It
 
- Type in “cancer immunotherapy” and  see titles, authors, affiliations, and  email addresses. No more fumbling through PubMed pages manually.
+ Type in “cancer immunotherapy” and see titles, authors, affiliations, and emails. No more fumbling through PubMed pages manually.
 
 ---
+
+##  Contributing
+
+We welcome your contributions! Please check out our [`CONTRIBUTING.md`](CONTRIBUTING.md) for guidelines on how to submit pull requests, ensure checks pass, and request approvals.
+
