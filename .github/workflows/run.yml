@@ -1,6 +1,8 @@
 name: Run application
 
 on:
+    push:
+        branches: [runaction]
     workflow_dispatch:
         inputs:
             search:
