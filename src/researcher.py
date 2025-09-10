@@ -7,7 +7,7 @@ class Researcher():
         self.initials = initials
         self.affiliation = affiliation
         self.email = email
-    
+
     def __repr__(self):
         kvps = [f"{k}={v}" for k, v in vars(self).items()]
         return f"{type(self).__name__}({', '.join(kvps)})"
