@@ -40,6 +40,4 @@ class ArticleAnalyzer(EutilsAnalyzer):
             emails, authors = extract_authors_and_emails(article)
             record = ArticleRecord(title, language, publish_date, emails, authors, pmid)
             self.result.add_article_record(record)
-                
 
-    

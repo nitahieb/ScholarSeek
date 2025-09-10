@@ -10,11 +10,11 @@ class ArticleRecord:
         self.emails = emails
         self.people = people
         self.pmid = pmid
-    
+
     def __repr__(self):
        kvps = [f"{k}={v}" for k, v in vars(self).items()]
        return f"{type(self).__name__}({', '.join(kvps)})"
-    
+
 
 class ArticleResult(EutilsResult):
     def __init__(self, response, request):
