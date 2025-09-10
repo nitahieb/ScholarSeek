@@ -8,7 +8,7 @@ class Pipeline:
         self.pipeline = self.conduit.new_pipeline()
 
     #TODO make sure I don't need to change this so the searchterm gets formatted properly before searching, like spaces should be changed to +
-    def addSearch(self, searchTerm, db="pubmed", retmax=100, rettype="uilist",sortBy="relevance"):
+    def addSearch(self, searchTerm, sortBy, retmax, db="pubmed", rettype="uilist",):
         searchQuery = {
             "db": db,
             "term": searchTerm,

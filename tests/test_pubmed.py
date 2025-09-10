@@ -24,7 +24,7 @@ def pipeline_with_mock():
 
 def test_pipeline_add_search(pipeline_with_mock):
     pl, mock_pipeline, _ = pipeline_with_mock
-    pl.addSearch("cancer")
+    pl.addSearch("cancer","relevance",10)
     mock_pipeline.add_search.assert_called_once()
 
 def test_pipeline_add_fetch(pipeline_with_mock):

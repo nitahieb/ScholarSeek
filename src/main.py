@@ -1,29 +1,28 @@
-from analyzer import ArticleAnalyzer
-from format import overviewFormat
-from pipeline import Pipeline
 
-#TODO I'll probably make this a simple console tool once it's more formed
 
-def getEmails(search,email="",retmax=10):
-    pipeline = Pipeline(email)
-    pipeline.addSearch(search,retmax=retmax)
-    analyzer = ArticleAnalyzer()
-    pipeline.addFetch(analyzer=analyzer)
-    results = pipeline.getResults()
-    emails = set()
-    for article in results.articles:
-        emails.update(article.emails)
-    return emails
+from cli import ParseArgs
+from services import getEmails, getSummary
 
-def createMarkdown(articles):
-    md = overviewFormat(articles)
 
-    with open("article_summary.md", "w", encoding="utf-8") as f:
-        f.write(md)
+
+def main():
+    args = ParseArgs()
+    if args.mode == "overview":
+        summary = getSummary(args.searchterm, args.sortby, args.email, args.searchnumber)
+        print(summary)
+        return summary
+    else:  # emails mode
+        emails = getEmails(args.searchterm, args.sortby, args.email, args.searchnumber)
+        print(emails)
+        return emails
 
 
 
 
 
 
+
+
+if __name__ == "__main__":
+    main()
 
