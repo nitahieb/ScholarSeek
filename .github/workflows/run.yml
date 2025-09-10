@@ -1,3 +1,5 @@
+name: Run application
+
 on:
     workflow_dispatch:
         inputs:
