@@ -46,7 +46,7 @@ jobs:
 
             - name: Run Script
               run: |
-                python main.py -m ${{inputs.mode}} -e ${{inputs.email}} -n ${{inputs.searchnumber}} -s ${{inputs.sortby}} ${{inputs.search}}
+                python src/main.py -m ${{inputs.mode}} -e ${{inputs.email}} -n ${{inputs.searchnumber}} -s ${{inputs.sortby}} ${{inputs.search}}
             
             
 
