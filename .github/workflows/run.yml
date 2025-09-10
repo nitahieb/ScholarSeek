@@ -1,0 +1,51 @@
+on:
+    workflow_dispatch:
+        inputs:
+            search:
+                description: 'Topic you want to search'
+                required: true
+            mode:
+                description: 'Chooses the output type for the application'
+                default: 'overview'
+                type: choice
+                options:
+                - overview
+                - emails
+            email:
+                description: 'the email you have registered with pubmed'
+                default: 
+            searchnumber:
+                description: 'Number of results you want'
+                type: number
+                default: 10
+            sortby:
+                description: 'Sort order for Pubmed Search'
+                default: 'relevance'
+                type: choice
+                options:
+                - relevance
+                - pub_date
+                - Author
+                - JournalName
+jobs:
+    run:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v5
+
+            - name: Set up Python
+              uses: actions/setup-python@v5
+              with:
+                python-version: '3.11'
+
+            - name: Install dependencies
+              run: python -m pip install --upgrade pip
+
+            - name: Run Script
+              run: |
+                python main.py -m ${{inputs.mode}} -e ${{inputs.email}} -n ${{inputs.searchnumber}} -s ${{inputs.sortby}} ${{inputs.search}}
+            
+            
+
+
