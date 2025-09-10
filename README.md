@@ -63,9 +63,32 @@ python main.py "cancer immunotherapy" -n 5 -m emails -s date
 ```
 
 You can mix and match options to customize your search results.
---
+
+---
 
 ##  Contributing
 
 We welcome your contributions! Please check out our [`CONTRIBUTING.md`](CONTRIBUTING.md) for guidelines on how to submit pull requests, ensure checks pass, and request approvals.
+
+## Linting with Ruff
+
+We use [Ruff](https://github.com/charliermarsh/ruff) as our Python linter to maintain code quality and consistency.
+
+**Install Ruff:**
+
+```bash
+pip install ruff
+```
+
+**Run Ruff manually:**
+
+```bash
+ruff check .
+```
+
+This will analyze your project and display any style or linting issues.
+
+**Recommended:** Use the [Ruff VS Code extension](https://marketplace.visualstudio.com/items?itemName=charliermarsh.ruff) for inline linting and autofix suggestions while editing your code.
+
+---
 
