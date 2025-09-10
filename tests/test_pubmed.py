@@ -107,7 +107,6 @@ def test_parse_xml(sample_article_xml):
 
 def test_extract_basics_and_publish_date(sample_article_xml):
     import lxml.etree as etree
-    from io import BytesIO
 
     article = etree.fromstring(sample_article_xml)
     pmid, title, language = extract_basics(article)
