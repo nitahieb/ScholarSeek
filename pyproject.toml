@@ -6,6 +6,9 @@ description = "Find published researchers on pubmed"
 authors = [{name="Nitahi Escolar Bach", email="nitahieb@gmail.com"}]
 requires-python = ">=3.10"
 
+[tool.poetry]
+package-mode = false
+
 [tool.poetry.dependencies]
 python = "^3.10"
 entrezpy = "*"
@@ -13,8 +16,8 @@ lxml = "*"
 pytest = "^8.0"
 uniqpath = "^0.1.3"
 
-[tool.poetry.dev-dependencies]
-ruff = "^0.0.365"
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.13.0"
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "C90"]
