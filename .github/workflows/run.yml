@@ -15,7 +15,7 @@ on:
                 - emails
             email:
                 description: 'the email you have registered with pubmed'
-                default: ''
+                default: 'email'
             searchnumber:
                 description: 'Number of results you want'
                 type: number
