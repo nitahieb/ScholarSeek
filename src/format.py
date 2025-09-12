@@ -12,7 +12,7 @@ def overviewFormat(articles):
 
 ---
 
-##  Authors & Affiliations
+###  Authors & Affiliations
 
 | Author | Affiliation |
 |--------|-------------|
@@ -20,7 +20,7 @@ def overviewFormat(articles):
         for a in article.people:
             md += f"| {a.firstName +' '+ a.lastName} | {a.affiliation} |\n"
         if article.emails:
-            md += "\n**Emails:  **"
+            md += "\n**Emails:** "
             md += ", ".join(article.emails)
             md+= "\n"
     return md
