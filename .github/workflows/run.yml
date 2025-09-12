@@ -65,7 +65,7 @@ jobs:
             - name: Run Script
               run: |
                 source .venv/bin/activate
-                python src/main.py -m ${{inputs.mode}} -e ${{inputs.email}} -n ${{inputs.searchnumber}} -s ${{inputs.sortby}} ${{inputs.search}}
+                python src/main.py -m ${{inputs.mode}} -e ${{inputs.email}} -n ${{inputs.searchnumber}} -s ${{inputs.sortby}} "${{inputs.search}}" >> $GITHUB_STEP_SUMMARY
             
             
 

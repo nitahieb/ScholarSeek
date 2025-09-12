@@ -12,11 +12,18 @@ def overviewFormat(articles):
 
 ---
 
-##  Authors & Affiliations
+###  Authors & Affiliations
 
-| Author | Affiliation | Email |
-|--------|-------------|-------|
+| Author | Affiliation |
+|--------|-------------|
 """
         for a in article.people:
-            md += f"| {a.firstName + a.lastName} | {a.affiliation} | {a.email or '-'} |\n"
+            md += f"| {a.firstName +' '+ a.lastName} | {a.affiliation} |\n"
+        if article.emails:
+            md += "\n**Emails:** "
+            md += ", ".join(article.emails)
+            md+= "\n"
     return md
+
+def emailFormat(emails):
+    return ", ".join(emails)
