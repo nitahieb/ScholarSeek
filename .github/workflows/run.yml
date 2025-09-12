@@ -1,4 +1,6 @@
 name: Run application
+permissions:
+  contents: read
 
 on:
     workflow_dispatch:
