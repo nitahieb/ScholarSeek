@@ -14,9 +14,10 @@ def overviewFormat(articles):
 
 ##  Authors & Affiliations
 
-| Author | Affiliation | Email |
-|--------|-------------|-------|
+| Author | Affiliation |
+|--------|-------------|
 """
         for a in article.people:
-            md += f"| {a.firstName + a.lastName} | {a.affiliation} | {a.email or '-'} |\n"
+            md += f"| {a.firstName +' '+ a.lastName} | {a.affiliation} |\n"
+    md+= f"**Emails:** {article.emails}"
     return md
