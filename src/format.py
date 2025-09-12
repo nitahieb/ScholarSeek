@@ -19,5 +19,7 @@ def overviewFormat(articles):
 """
         for a in article.people:
             md += f"| {a.firstName +' '+ a.lastName} | {a.affiliation} |\n"
-    md+= f"**Emails:** {article.emails}"
+        md += "\n**Emails: **"
+        for email in article.emails:
+            md += f"{article.emails} "
     return md
