@@ -1,5 +1,5 @@
 from analyzer import ArticleAnalyzer
-from format import overviewFormat
+from format import emailFormat, overviewFormat
 from pipeline import Pipeline
 
 def getSummary(search, sortBy, email, retmax):
@@ -20,4 +20,4 @@ def getEmails(search, sortBy, email, retmax):
     emails = set()
     for article in results.articles:
         emails.update(article.emails)
-    return emails
+    return emailFormat(emails)
