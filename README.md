@@ -12,9 +12,42 @@ PubMed Author Finder helps you quickly find research papers on any topic and giv
 
 ---
 
-## How to Use
+## Using the GitHub Action
 
-Once installed, you can run `PubMedSearch` directly from your terminal.
+You can interact with PubMed Author Finder directly from GitHub using the provided GitHub Action workflow. This is useful for running searches and retrieving results without setting up the app locally.
+
+### How to Trigger
+
+- **Manually:** Go to the **Actions** tab in your GitHub repository, select `Run application`, and click **Run workflow**. Fill in the input fields as needed.
+
+### Supported Parameters
+
+| Parameter      | Description                                 | Required | Default     | Options/Example Values           |
+| -------------- | ------------------------------------------- | -------- | ----------- | ------------------------------- |
+| `search`       | Topic or query to search for                | Yes      | –           | "cancer immunotherapy"          |
+| `mode`         | Output type                                 | No       | overview    | overview, emails                |
+| `email`        | Filter by author email                      | No       | (empty)     | "author@email.com"              |
+| `searchnumber` | Number of results to return                 | No       | 10          | 1, 5, 20                        |
+| `sortby`       | Sort order for PubMed search                | No       | relevance   | relevance, pub_date, Author, JournalName |
+
+### Modes
+
+- `overview`: Returns a summary of articles for the search term.
+- `emails`: Returns author emails for the search term.
+
+### Example: Manual Run
+
+1. Go to **Actions** > **Run application** > **Run workflow**.
+2. Enter your search term (e.g., `cancer immunotherapy`).
+3. Choose a mode (e.g., `emails` to get author emails).
+4. Optionally set `searchnumber`, `sortby`, or `email`.
+5. Click **Run workflow**. Results will appear in the workflow summary.
+
+---
+
+## How to Use the script
+
+Once downloaded, you can run `PubMedSearch` directly from your terminal.
 
 **Basic search:**
 
