@@ -24,9 +24,9 @@ def extract_authors_and_emails(article):
     emails = set()
     authors = []
     for auth in article.findall('.//Author'):
-        last = auth.findtext('LastName')
-        first = auth.findtext('ForeName')
-        initials = auth.findtext('Initials')
+        last = auth.findtext('LastName') or ""
+        first = auth.findtext('ForeName') or ""
+        initials = auth.findtext('Initials') or ""
         affiliation = auth.findtext('.//Affiliation') or ""
         email = extract_email(affiliation)
         if email:
