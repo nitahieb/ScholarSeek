@@ -134,7 +134,7 @@ After making changes, always validate:
    python src/main.py --help
    
    # Test argument parsing (will work offline)
-   python src/main.py "test" -n 2 -m emails --help
+   python src/main.py "test" -n 2 -m emails
    ```
 
 2. **Code Quality:**
