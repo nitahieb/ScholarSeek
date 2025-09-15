@@ -6,3 +6,6 @@ build/
 *.egg-info/
 dist/
 .venv/
+web/web/__pycache__/*
+web/api/__pycache__/*
+web/api/migrations/__pycache__/*

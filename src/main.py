@@ -1,5 +1,3 @@
-
-
 from cli import ParseArgs
 from services import getEmails, getSummary
 
