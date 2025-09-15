@@ -44,7 +44,7 @@ class TestGetSummary:
     def test_get_summary_different_parameters(
         self, mock_analyzer_class, mock_pipeline_class, mock_overview_format
     ):
-        """Test getSummary with different parameter values."""
+        """Test getSummary with different parameter values and no results."""
         # Setup mocks
         mock_pipeline = MagicMock()
         mock_pipeline_class.return_value = mock_pipeline
@@ -55,8 +55,6 @@ class TestGetSummary:
         mock_results = MagicMock()
         mock_results.articles = []
         mock_pipeline.getResults.return_value = mock_results
-
-        mock_overview_format.return_value = "empty overview"
 
         # Call function with different parameters
         result = getSummary("diabetes", "pub_date", "researcher@university.edu", 25)
@@ -64,36 +62,12 @@ class TestGetSummary:
         # Verify calls with new parameters
         mock_pipeline_class.assert_called_once_with("researcher@university.edu")
         mock_pipeline.addSearch.assert_called_once_with("diabetes", retmax=25, sortBy="pub_date")
-        mock_overview_format.assert_called_once_with([])
+        mock_analyzer_class.assert_called_once()
+        mock_pipeline.addFetch.assert_called_once_with(analyzer=mock_analyzer)
+        mock_pipeline.getResults.assert_called_once()
+        mock_overview_format.assert_not_called()
 
-        assert result == "empty overview"
-
-    @patch('services.overviewFormat')
-    @patch('services.Pipeline')
-    @patch('services.ArticleAnalyzer')
-    def test_get_summary_empty_email(
-        self, mock_analyzer_class, mock_pipeline_class, mock_overview_format
-    ):
-        """Test getSummary with empty email parameter."""
-        # Setup mocks
-        mock_pipeline = MagicMock()
-        mock_pipeline_class.return_value = mock_pipeline
-
-        mock_analyzer = MagicMock()
-        mock_analyzer_class.return_value = mock_analyzer
-
-        mock_results = MagicMock()
-        mock_results.articles = []
-        mock_pipeline.getResults.return_value = mock_results
-
-        mock_overview_format.return_value = ""
-
-        # Call function with empty email
-        result = getSummary("test", "relevance", "", 5)
-
-        # Verify pipeline created with empty email
-        mock_pipeline_class.assert_called_once_with("")
-        assert result == ""
+        assert result == "No articles found for your search."
 
 
 class TestGetEmails:
@@ -239,10 +213,8 @@ class TestGetEmails:
         # Call function
         result = getEmails("obscure term", "relevance", "test@email.com", 10)
 
-        # Verify empty set is passed to formatter
-        mock_email_format.assert_called_once_with(set())
 
-        assert result == ""
+        assert result == "No articles found — no emails to display."
 
     @patch('services.emailFormat')
     @patch('services.Pipeline')
@@ -258,11 +230,19 @@ class TestGetEmails:
         mock_analyzer = MagicMock()
         mock_analyzer_class.return_value = mock_analyzer
 
+        # Create mock articles with emails for this parameter set
+        mock_article1 = MagicMock()
+        mock_article1.emails = {"authorA@university.edu", "authorB@institute.org"}
+
+        mock_article2 = MagicMock()
+        mock_article2.emails = {"authorC@hospital.net"}
+
         mock_results = MagicMock()
-        mock_results.articles = []
+        mock_results.articles = [mock_article1, mock_article2]
         mock_pipeline.getResults.return_value = mock_results
 
-        mock_email_format.return_value = ""
+        expected_emails = {"authorA@university.edu", "authorB@institute.org", "authorC@hospital.net"}
+        mock_email_format.return_value = "authorA@university.edu, authorB@institute.org, authorC@hospital.net"
 
         # Call function with different parameters
         result = getEmails("heart disease", "Author", "doctor@hospital.org", 50)
@@ -270,5 +250,6 @@ class TestGetEmails:
         # Verify calls with new parameters
         mock_pipeline_class.assert_called_once_with("doctor@hospital.org")
         mock_pipeline.addSearch.assert_called_once_with("heart disease", retmax=50, sortBy="Author")
+        mock_email_format.assert_called_once_with(expected_emails)
 
-        assert result == ""
+        assert result == "authorA@university.edu, authorB@institute.org, authorC@hospital.net"
