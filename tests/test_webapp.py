@@ -65,10 +65,35 @@ def test_search_endpoint_invalid_searchnumber(client):
     data = response.get_json()
     assert 'searchnumber must be between 1 and 100' in data['error']
 
-@patch('webapp.getSummary')
-def test_search_endpoint_overview_mode(mock_get_summary, client):
-    """Test search endpoint in overview mode with mocked service"""
-    mock_get_summary.return_value = "## Mock Article\n**Title:** Test Article"
+@patch('webapp.subprocess.run')
+def test_search_endpoint_network_error(mock_subprocess, client):
+    """Test search endpoint with network error (blocked PubMed access)"""
+    # Mock subprocess response with network error
+    mock_result = type('MockResult', (), {
+        'returncode': 1,
+        'stdout': '',
+        'stderr': 'urllib.error.URLError: <urlopen error [Errno -5] No address associated with hostname>'
+    })()
+    mock_subprocess.return_value = mock_result
+    
+    response = client.post('/api/search',
+                          json={'searchterm': 'test', 'mode': 'overview'},
+                          content_type='application/json')
+    assert response.status_code == 500
+    data = response.get_json()
+    assert 'Network access to PubMed is currently blocked' in data['error']
+    assert 'eutils.ncbi.nlm.nih.gov' in data['details']
+
+@patch('webapp.subprocess.run')
+def test_search_endpoint_overview_mode(mock_subprocess, client):
+    """Test search endpoint in overview mode with mocked subprocess"""
+    # Mock successful subprocess response
+    mock_result = type('MockResult', (), {
+        'returncode': 0,
+        'stdout': "## Mock Article\n**Title:** Test Article",
+        'stderr': ''
+    })()
+    mock_subprocess.return_value = mock_result
     
     response = client.post('/api/search',
                           json={'searchterm': 'test', 'mode': 'overview'},
@@ -78,12 +103,23 @@ def test_search_endpoint_overview_mode(mock_get_summary, client):
     assert data['success']
     assert data['mode'] == 'overview'
     assert 'Mock Article' in data['result']
-    mock_get_summary.assert_called_once_with('test', 'relevance', '', 10)
+    # Check that subprocess was called with correct arguments
+    mock_subprocess.assert_called_once()
+    call_args = mock_subprocess.call_args
+    assert 'test' in call_args[0][0]  # searchterm in command
+    assert '-m' in call_args[0][0]  # mode flag
+    assert 'overview' in call_args[0][0]  # mode value
 
-@patch('webapp.getEmails')
-def test_search_endpoint_emails_mode(mock_get_emails, client):
-    """Test search endpoint in emails mode with mocked service"""
-    mock_get_emails.return_value = "test@example.com, author@university.edu"
+@patch('webapp.subprocess.run')
+def test_search_endpoint_emails_mode(mock_subprocess, client):
+    """Test search endpoint in emails mode with mocked subprocess"""
+    # Mock successful subprocess response
+    mock_result = type('MockResult', (), {
+        'returncode': 0,
+        'stdout': "test@example.com, author@university.edu",
+        'stderr': ''
+    })()
+    mock_subprocess.return_value = mock_result
     
     response = client.post('/api/search',
                           json={'searchterm': 'test', 'mode': 'emails'},
@@ -93,4 +129,9 @@ def test_search_endpoint_emails_mode(mock_get_emails, client):
     assert data['success']
     assert data['mode'] == 'emails'
     assert 'test@example.com' in data['result']
-    mock_get_emails.assert_called_once_with('test', 'relevance', '', 10)
+    # Check that subprocess was called with correct arguments
+    mock_subprocess.assert_called_once()
+    call_args = mock_subprocess.call_args
+    assert 'test' in call_args[0][0]  # searchterm in command
+    assert '-m' in call_args[0][0]  # mode flag
+    assert 'emails' in call_args[0][0]  # mode value
