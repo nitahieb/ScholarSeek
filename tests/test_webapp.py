@@ -15,11 +15,12 @@ def client():
         yield client
 
 def test_index_route(client):
-    """Test that the main page loads correctly"""
+    """Test that the main page loads correctly (React app)"""
     response = client.get('/')
     assert response.status_code == 200
-    assert b'PubMed Author Finder' in response.data
-    assert b'Search Term' in response.data
+    # Check that the React app structure is present
+    assert b'<div id="root"></div>' in response.data
+    assert b'main.' in response.data  # Check for main.js bundle
 
 def test_health_endpoint(client):
     """Test health check endpoint"""

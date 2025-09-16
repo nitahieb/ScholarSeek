@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_from_directory
 import subprocess
 import json
 import sys
@@ -6,7 +6,10 @@ import os
 import threading
 from constants import APPLICATION_OUTPUT_OPTIONS, PUBMED_SORT_OPTIONS
 
-app = Flask(__name__, template_folder='templates', static_folder='static')
+# Configure Flask to serve React build
+app = Flask(__name__, 
+            static_folder='../frontend/build/static',
+            template_folder='../frontend/build')
 
 def safe_search(searchterm, mode, email, searchnumber, sortby):
     """
@@ -35,10 +38,19 @@ def safe_search(searchterm, mode, email, searchnumber, sortby):
 
 @app.route('/')
 def index():
-    """Main web interface"""
-    return render_template('index.html',
-                         output_options=APPLICATION_OUTPUT_OPTIONS,
-                         sort_options=PUBMED_SORT_OPTIONS)
+    """Serve React app"""
+    return send_from_directory(app.template_folder, 'index.html')
+
+@app.route('/<path:path>')
+def serve_react_app(path):
+    """Serve React app for any route that doesn't match API routes"""
+    # If it's a static file, serve it from the build directory
+    full_path = os.path.join(app.template_folder, path)
+    if os.path.exists(full_path) and os.path.isfile(full_path):
+        return send_from_directory(app.template_folder, path)
+    
+    # Otherwise, serve the React app (for client-side routing)
+    return send_from_directory(app.template_folder, 'index.html')
 
 @app.route('/api/health')
 def health_check():

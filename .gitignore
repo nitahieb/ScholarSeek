@@ -11,3 +11,8 @@ instance/
 .env
 .venv
 .DS_Store
+
+# React
+frontend/node_modules/
+frontend/build/
+frontend/.eslintcache
