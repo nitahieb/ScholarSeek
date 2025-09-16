@@ -28,8 +28,6 @@ class ArticleAnalyzer(EutilsAnalyzer):
         )
 
 
-    #TODO finish this
-    #Once done probably want to break this down into more functions/files
     def analyze_result(self, response, request):
         self.init_result(response, request)
         root = parse_xml(response)

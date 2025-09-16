@@ -1,11 +1,44 @@
-.pytest_cache/*
-src/__pycache__/*
-tests/__pycache__/*
-.coverage
-build/
+# Python
+__pycache__/
+*.py[cod]
 *.egg-info/
 dist/
+build/
+*.pyo
+*.pyd
+*.so
+*.db
+*.sqlite3
+
+# Poetry
 .venv/
+poetry.lock
+
+# Django
 web/web/__pycache__/*
 web/api/__pycache__/*
 web/api/migrations/__pycache__/*
+web/db.sqlite3
+
+# Coverage/test
+.coverage
+.pytest_cache/
+.ruff_cache/
+htmlcov/
+*.log
+
+# Frontend (Node/Vite/React)
+web/frontend/node_modules/
+web/frontend/dist/
+web/frontend/.env
+web/frontend/.tmp/
+web/frontend/.vite/
+
+# VSCode/IDE
+.vscode/
+.idea/
+.DS_Store
+
+# Misc
+*.swp
+*.swo

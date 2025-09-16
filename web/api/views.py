@@ -1,11 +1,82 @@
-from django.shortcuts import render
+import subprocess
+import sys
+import os
 from django.contrib.auth.models import User
-from rest_framework import generics
-from .serializers import UserSerializer
+from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+from .serializers import UserSerializer, SearchSerializer
+from .models import Search
+
 
 # Create your views here.
-class createUserView(generics.CreateAPIView):
+class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [AllowAny] #TODO Specify this
+
+class SearchListCreate(generics.ListCreateAPIView):
+    queryset = Search.objects.all()
+    serializer_class = SearchSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return Search.objects.filter(user=user)
+
+    def perform_create(self, serializer):
+        if serializer.is_valid():
+            serializer.save(user=self.request.user)
+        else:
+            print(serializer.errors)
+
+class PubmedSearchView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        searchterm = request.data.get("searchterm")
+        mode = request.data.get("mode", "overview")
+        email = request.user.email
+        print(email)
+        print("EEEEEEEEEE")
+        searchnumber = int(request.data.get("searchnumber", 10))
+        sortby = request.data.get("sortby", "relevance")
+
+        if not searchterm:
+            return Response({"error": "Missing search term"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Build CLI command
+        cli_args = [
+            sys.executable,
+            os.path.abspath(os.path.join(os.path.dirname(__file__), '../../src/main.py')),
+            f'"{searchterm}"',
+            "-m", mode,
+            "-e", email,
+            "-n", str(searchnumber),
+            "-s", sortby
+        ]
+
+        try:
+            result = subprocess.run(
+                cli_args,
+                capture_output=True,
+                text=True,
+                check=True
+            )
+            output = result.stdout
+        except subprocess.CalledProcessError as e:
+            return Response({"error": e.stderr or str(e)},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        # Save the search to the database
+        search_obj = Search(user=request.user, query=searchterm)
+        search_obj.save()
+        serializer = SearchSerializer(search_obj)
+
+        return Response({
+            "result": output,
+            "search": serializer.data
+        }, status=status.HTTP_200_OK)
+
