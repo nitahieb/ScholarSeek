@@ -39,8 +39,6 @@ class PubmedSearchView(APIView):
         searchterm = request.data.get("searchterm")
         mode = request.data.get("mode", "overview")
         email = request.user.email
-        print(email)
-        print("EEEEEEEEEE")
         searchnumber = int(request.data.get("searchnumber", 10))
         sortby = request.data.get("sortby", "relevance")
 
@@ -57,6 +55,12 @@ class PubmedSearchView(APIView):
             "-n", str(searchnumber),
             "-s", sortby
         ]
+        allowed_modes = {"overview", "emails"}
+        allowed_sort = {"relevance", "pub_date", "Author", "JournalName"}
+        if mode not in allowed_modes:
+            return Response({"error": "Invalid mode"}, status=status.HTTP_400_BAD_REQUEST)
+        if sortby not in allowed_sort:
+            return Response({"error": "Invalid sort option"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             result = subprocess.run(
