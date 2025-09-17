@@ -258,3 +258,21 @@
 .footer a:hover {
   text-decoration: underline;
 }
+
+.form-switch {
+  width: 95%;
+  padding: 10px;
+  margin: 10px 0 0 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: background 0.2s;
+}
+
+.form-switch:hover {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
