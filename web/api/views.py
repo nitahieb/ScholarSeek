@@ -1,6 +1,7 @@
 import subprocess
 import sys
 import os
+import logging
 from django.contrib.auth.models import User
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -71,7 +72,8 @@ class PubmedSearchView(APIView):
             )
             output = result.stdout
         except subprocess.CalledProcessError as e:
-            return Response({"error": e.stderr or str(e)},
+            logging.error("PubmedSearch subprocess error: %s", e.stderr or str(e))
+            return Response({"error": "An internal error occurred while processing your search request."},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         # Save the search to the database
