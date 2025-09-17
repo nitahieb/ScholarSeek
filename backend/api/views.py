@@ -49,7 +49,7 @@ class PubmedSearchView(APIView):
         # Build CLI command
         cli_args = [
             sys.executable,
-            os.path.abspath(os.path.join(os.path.dirname(__file__), '../../src/main.py')),
+            os.path.abspath(os.path.join(os.path.dirname(__file__), '../../cli/main.py')),
             f'"{searchterm}"',
             "-m", mode,
             "-e", email,
