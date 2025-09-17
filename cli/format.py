@@ -4,11 +4,11 @@ def overviewFormat(articles):
     for article in articles:
         md += f"""##  Article Overview
 
-**Title:** {article.title}  
-**URL:** https://pubmed.ncbi.nlm.nih.gov/{article.pmid}  
-**Language:** {article.language}    
-**Publication Date:** {article.date}    
-**PMID:** {article.pmid}    
+**Title:** {article.title}
+**URL:** https://pubmed.ncbi.nlm.nih.gov/{article.pmid}
+**Language:** {article.language}
+**Publication Date:** {article.date}
+**PMID:** {article.pmid}
 
 ---
 

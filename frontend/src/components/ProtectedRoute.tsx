@@ -2,22 +2,13 @@ import { Navigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import api from "../api";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
-import {type JSX, useState, useEffect } from "react";
+import {type JSX, useState, useEffect, useCallback } from "react";
 
 function ProtectedRoute({ children }: { children: JSX.Element }) {
 
     const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
-    useEffect(() => {
-        authenticate().catch((error) => {
-            setIsAuthenticated(false);
-            console.error("Error during authentication:", error);
-        });
-    }, []);
-
-
-
-    const refreshToken = async () => {
+    const refreshToken = useCallback(async () => {
         const refreshToken = localStorage.getItem(REFRESH_TOKEN);
         try {
             const res = await api.post("api/token/refresh/", { 
@@ -35,9 +26,9 @@ function ProtectedRoute({ children }: { children: JSX.Element }) {
             setIsAuthenticated(false);
         }
 
-    };
+    }, []);
 
-    const authenticate = async () => {
+    const authenticate = useCallback(async () => {
         const accessToken = localStorage.getItem(ACCESS_TOKEN);
         if (!accessToken) {
             setIsAuthenticated(false);
@@ -52,7 +43,14 @@ function ProtectedRoute({ children }: { children: JSX.Element }) {
         } else {
             setIsAuthenticated(true);
         }
-    };
+    }, [refreshToken]);
+
+    useEffect(() => {
+        authenticate().catch((error) => {
+            setIsAuthenticated(false);
+            console.error("Error during authentication:", error);
+        });
+    }, [authenticate]);
 
     if (isAuthenticated === null) {
         return <div>Loading...</div>;

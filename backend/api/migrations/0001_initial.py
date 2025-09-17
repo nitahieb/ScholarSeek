@@ -17,10 +17,19 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Search',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(
+                    auto_created=True,
+                    primary_key=True,
+                    serialize=False,
+                    verbose_name='ID'
+                )),
                 ('query', models.CharField(max_length=255)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='searches', to=settings.AUTH_USER_MODEL)),
+                ('user', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    related_name='searches',
+                    to=settings.AUTH_USER_MODEL
+                )),
             ],
         ),
     ]

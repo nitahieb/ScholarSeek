@@ -36,11 +36,12 @@ function Form({route, method}: {route: string, method: string}) {
             } else {
                 navigate("/login");
             }
-        } catch (error: any) {
+        } catch (error: unknown) {
+            const errorResponse = error as { response?: { data?: { username?: string[] } } };
             if (
                 method === "register" &&
-                error?.response?.data?.username &&
-                error.response.data.username[0].includes("already exists")
+                errorResponse?.response?.data?.username &&
+                errorResponse.response.data.username[0].includes("already exists")
             ) {
                 setErrorMsg("An account with that username already exists.");
             } else {

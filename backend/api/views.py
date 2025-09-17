@@ -16,7 +16,7 @@ from .models import Search
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [AllowAny] #TODO Specify this
+    permission_classes = [AllowAny]  # Allow anyone to create a user account
 
 class SearchListCreate(generics.ListCreateAPIView):
     queryset = Search.objects.all()
@@ -49,7 +49,7 @@ class PubmedSearchView(APIView):
         # Build CLI command
         cli_args = [
             sys.executable,
-            os.path.abspath(os.path.join(os.path.dirname(__file__), '../../src/main.py')),
+            os.path.abspath(os.path.join(os.path.dirname(__file__), '../../cli/main.py')),
             f'"{searchterm}"',
             "-m", mode,
             "-e", email,

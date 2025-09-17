@@ -45,14 +45,14 @@ You can interact with PubMed Author Finder directly from GitHub using the provid
 
 ---
 
-## How to Use the script
+## How to Use the CLI
 
-Once downloaded, you can run `PubMedSearch` directly from your terminal.
+Once downloaded, you can run the PubMed Author Finder CLI directly from your terminal.
 
 **Basic search:**
 
 ```bash
-python main.py "cancer immunotherapy"
+python cli/main.py "cancer immunotherapy"
 ```
 
 This will display an overview of the top 10 most relevant articles for the search term.
@@ -60,7 +60,7 @@ This will display an overview of the top 10 most relevant articles for the searc
 **Specify number of results:**
 
 ```bash
-python main.py "cancer immunotherapy" -n 5
+python cli/main.py "cancer immunotherapy" -n 5
 ```
 
 This returns only the top 5 results.
@@ -68,15 +68,15 @@ This returns only the top 5 results.
 **Choose output mode:**
 
 ```bash
-python main.py "cancer immunotherapy" -m emails
+python cli/main.py "cancer immunotherapy" -m emails
 ```
 
-`-m` or `--mode` can be one of the available application output options (e.g., `relevance`, `pub_date`, `Author`, `JournalName`).
+`-m` or `--mode` can be one of the available application output options (e.g., `overview`, `emails`).
 
 **Sort results:**
 
 ```bash
-python main.py "cancer immunotherapy" -s date
+python cli/main.py "cancer immunotherapy" -s pub_date
 ```
 
 Sort articles by relevance, date, or other supported PubMed sort options.
@@ -84,7 +84,7 @@ Sort articles by relevance, date, or other supported PubMed sort options.
 **Filter by email (optional):**
 
 ```bash
-python main.py "cancer immunotherapy" -e example@email.com
+python cli/main.py "cancer immunotherapy" -e example@email.com
 ```
 
 Search and display articles associated with a specific author email.
@@ -92,10 +92,62 @@ Search and display articles associated with a specific author email.
 **Combine options:**
 
 ```bash
-python main.py "cancer immunotherapy" -n 5 -m emails -s date
+python cli/main.py "cancer immunotherapy" -n 5 -m emails -s pub_date
 ```
 
 You can mix and match options to customize your search results.
+
+---
+
+## Repository Structure
+
+The repository is organized into three main components:
+
+```
+├── cli/              # Python CLI application for PubMed search
+│   ├── main.py       # Entry point
+│   ├── services.py   # Core business logic
+│   ├── pipeline.py   # PubMed API integration
+│   └── ...          # Other CLI modules
+├── backend/          # Django web API
+│   ├── api/          # REST API app
+│   ├── web/          # Django project settings
+│   └── manage.py     # Django management script
+├── frontend/         # React web application
+│   ├── src/          # React source code
+│   ├── public/       # Static assets
+│   └── package.json  # Frontend dependencies
+└── tests/            # Test suite for CLI application
+```
+
+### CLI Application
+The CLI application (`cli/` directory) provides the core PubMed search functionality. It can be used standalone or integrated with the web application.
+
+### Web Application
+The web application consists of:
+- **Backend** (`backend/` directory): Django REST API that wraps the CLI functionality
+- **Frontend** (`frontend/` directory): React application for web-based interaction
+
+### Development Setup
+
+**For CLI development:**
+```bash
+poetry install --no-interaction --no-root
+poetry run python cli/main.py "your search term"
+```
+
+**For backend development:**
+```bash
+cd backend
+poetry run python manage.py runserver
+```
+
+**For frontend development:**
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
 ---
 
