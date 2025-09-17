@@ -1,7 +1,5 @@
 import type { SearchRequest, SearchResponse } from '../types';
 import api from '../api';
-const API_BASE_URL = import.meta.env.VITE_API_URL;
-
 export class PubMedAPIService {
   static async search(searchData: SearchRequest): Promise<SearchResponse> {
     const response = await api.post(`/api/pubmed-search/`, searchData);
