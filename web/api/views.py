@@ -73,7 +73,7 @@ class PubmedSearchView(APIView):
             output = result.stdout
         except subprocess.CalledProcessError as e:
             logging.error("PubmedSearch subprocess error: %s", e.stderr or str(e))
-            return Response({"error": "An internal error occurred while processing your search request."},
+            return Response({"error": "An internal error occurred while processing your request."},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         # Save the search to the database
