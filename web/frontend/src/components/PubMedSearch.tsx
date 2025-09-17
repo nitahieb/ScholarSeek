@@ -27,23 +27,15 @@ const PubMedSearch: React.FC = () => {
   };
 
   return (
-    <div className="pubmed-search">
-      <header className="header">
-        <h1>🔬 PubMed Author Finder</h1>
-        <p className="subtitle">Know a topic? Pull up articles. Meet authors. Make contact.</p>
-      </header>
-
-      <main className="main-content">
-        <SearchForm 
-          onSearch={handleSearch} 
-          loading={loading}
-          outputOptions={OUTPUT_OPTIONS}
-          sortOptions={SORT_OPTIONS}
-        />
-
-        {error && <ErrorDisplay message={error} />}
-        {results && <SearchResults results={results} />}
-      </main>
+    <div className="form-card">
+      <SearchForm 
+        onSearch={handleSearch} 
+        loading={loading}
+        outputOptions={OUTPUT_OPTIONS}
+        sortOptions={SORT_OPTIONS}
+      />
+      {error && <ErrorDisplay message={error} />}
+      {results && <SearchResults results={results} />}
     </div>
   );
 };

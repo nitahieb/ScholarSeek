@@ -2,10 +2,12 @@ import { useState } from "react";
 import api from "../api";
 import { useNavigate } from "react-router-dom";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
-import "../styles/Form.css"
+import "../styles/Form.css";
+import Header from "./Header";
+import Footer from "./Footer"; // Add this import
+import "./PubMedSearch.css";
 
-
-function Form({route, method}: {route: string, method: string}) {
+function Form({ route, method }: { route: string; method: string }) {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -14,13 +16,12 @@ function Form({route, method}: {route: string, method: string}) {
     const [errorMsg, setErrorMsg] = useState("");
     const navigate = useNavigate();
 
-    const name = method === "login" ? "Login" : "Register"; 
+    const name = method === "login" ? "Login" : "Register";
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         setLoading(true);
         e.preventDefault();
 
-        // Passwords must match for registration
         if (method === "register" && password !== confirmPassword) {
             setErrorMsg("Passwords do not match.");
             setLoading(false);
@@ -28,7 +29,7 @@ function Form({route, method}: {route: string, method: string}) {
         }
 
         try {
-            const response = await api.post(route, {username, password, email});
+            const response = await api.post(route, { username, password, email });
             if (method === "login") {
                 localStorage.setItem(ACCESS_TOKEN, response.data.access);
                 localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
@@ -49,50 +50,75 @@ function Form({route, method}: {route: string, method: string}) {
         } finally {
             setLoading(false);
         }
-    }
+    };
 
     return (
-        <form onSubmit={handleSubmit} className="form-container">
-            <h1>{name}</h1>
-            {errorMsg && <div className="form-error">{errorMsg}</div>}
-            <input 
-                className="form-input" 
-                type="text" 
-                placeholder="Username" 
-                value={username} 
-                onChange={(e) => setUsername(e.target.value)} required 
-            />
-            {method === "register" && (
-                <>
-                    <input
-                        className="form-input"
-                        type="email"
-                        placeholder="Email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)} required
-                    />
-                    <input
-                        className="form-input"
-                        type="password"
-                        placeholder="Confirm Password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        required
-                    />
-                </>
-            )}
-            <input 
-                className="form-input" 
-                type="password" 
-                placeholder="Password" 
-                value={password} 
-                onChange={(e) => setPassword(e.target.value)} required 
-            />
-            <button className="form-button" type="submit" disabled={loading}>
-                {loading ? "Loading..." : name}
-            </button>   
-        </form>
+        <div className="pubmed-search">
+            <Header />
+            <main className="main-content">
+                <form onSubmit={handleSubmit} className="form-container">
+                    <h1>{name}</h1>
+                    {errorMsg && <div className="form-error">{errorMsg}</div>}
+                    <div className="form-group">
+                        <label htmlFor="username">Username</label>
+                        <input
+                            className="form-input"
+                            type="text"
+                            id="username"
+                            placeholder="Username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            required
+                        />
+                    </div>
+                    {method === "register" && (
+                        <>
+                            <div className="form-group">
+                                <label htmlFor="email">Email</label>
+                                <input
+                                    className="form-input"
+                                    type="email"
+                                    id="email"
+                                    placeholder="Email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="confirmPassword">Confirm Password</label>
+                                <input
+                                    className="form-input"
+                                    type="password"
+                                    id="confirmPassword"
+                                    placeholder="Confirm Password"
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    required
+                                />
+                            </div>
+                        </>
+                    )}
+                    <div className="form-group">
+                        <label htmlFor="password">Password</label>
+                        <input
+                            className="form-input"
+                            type="password"
+                            id="password"
+                            placeholder="Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <button className="form-button" type="submit" disabled={loading}>
+                        {loading ? "Loading..." : name}
+                    </button>
+                </form>
+            </main>
+            <Footer /> {/* Add this line */}
+        </div>
     );
 }
 
-export default Form
+export default Form;
