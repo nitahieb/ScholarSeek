@@ -2,7 +2,7 @@
 
 **Know a topic? Pull up articles. Meet authors. Make contact.**
 
-Scholar Seek helps you quickly find research papers on any topic and gives you author contact info so you can reach out faster.
+Scholar Seek will help you quickly find research papers on any topic and gives you author contact info so you can reach out faster.
 
 ---
 
