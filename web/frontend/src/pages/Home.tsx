@@ -12,13 +12,13 @@ function Home() {
 
   return (
     <div className="pubmed-search">
+      <div className="logout-bar">
+        <button className="logout-btn" onClick={handleLogout}>
+          Logout
+        </button>
+      </div>
       <Header />
       <main className="main-content">
-        <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "10px" }}>
-          <button className="logout-btn" onClick={handleLogout}>
-            Logout
-          </button>
-        </div>
         <PubMedSearch />
       </main>
       <Footer />

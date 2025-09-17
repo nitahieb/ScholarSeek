@@ -118,30 +118,26 @@ function Form({ route, method }: { route: string; method: string }) {
                         {method === "login" ? (
                             <span>
                                 New to PubMed Author Finder?{" "}
-                                <a
-                                    href="#"
+                                <button
+                                    type="button"
                                     className="form-link"
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        navigate("/register");
-                                    }}
+                                    onClick={() => navigate("/register")}
+                                    style={{ background: "none", border: "none", padding: 0, font: "inherit", cursor: "pointer" }}
                                 >
                                     Sign up
-                                </a>
+                                </button>
                             </span>
                         ) : (
                             <span>
                                 Already have an account?{" "}
-                                <a
-                                    href="#"
+                                <button
+                                    type="button"
                                     className="form-link"
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        navigate("/login");
-                                    }}
+                                    onClick={() => navigate("/login")}
+                                    style={{ background: "none", border: "none", padding: 0, font: "inherit", cursor: "pointer" }}
                                 >
                                     Log in
-                                </a>
+                                </button>
                             </span>
                         )}
                     </div>
