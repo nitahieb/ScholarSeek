@@ -276,3 +276,29 @@
 .form-switch:hover {
   background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
 }
+
+.header-with-logout {
+  position: relative;
+}
+
+.logout-btn {
+  position: absolute;
+  top: 20px;
+  right: 32px;
+  padding: 8px 24px;
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: background 0.2s, color 0.2s, border 0.2s;
+}
+
+.logout-btn:hover {
+  background: #e5e7eb;
+  color: #222;
+  border-color: #d1d5db;
+}
