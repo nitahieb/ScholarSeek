@@ -258,3 +258,75 @@
 .footer a:hover {
   text-decoration: underline;
 }
+
+.form-switch {
+  width: 95%;
+  padding: 10px;
+  margin: 10px 0 0 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: background 0.2s;
+}
+
+.form-switch:hover {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+.header-with-logout {
+  position: relative;
+}
+
+.header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0;
+}
+
+.logout-bar {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  padding-top: 10px;
+  /* Remove max-width and margin: 0 auto */
+}
+
+.logout-btn {
+  padding: 8px 24px;
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: background 0.2s, color 0.2s, border 0.2s;
+  margin-right: 0;
+}
+
+.logout-btn:hover {
+  background: #e5e7eb;
+  color: #222;
+  border-color: #d1d5db;
+}
+
+.form-link {
+  color: #0400ff;
+  font-weight: 600;
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.form-link:hover {
+  color: #764ba2;
+  text-decoration: underline;
+}

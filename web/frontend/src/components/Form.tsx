@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 import "../styles/Form.css";
 import Header from "./Header";
-import Footer from "./Footer"; // Add this import
+import Footer from "./Footer";
 import "./PubMedSearch.css";
 
 function Form({ route, method }: { route: string; method: string }) {
@@ -114,9 +114,36 @@ function Form({ route, method }: { route: string; method: string }) {
                     <button className="form-button" type="submit" disabled={loading}>
                         {loading ? "Loading..." : name}
                     </button>
+                    <div style={{ marginTop: "18px", textAlign: "center" }}>
+                        {method === "login" ? (
+                            <span>
+                                New to PubMed Author Finder?{" "}
+                                <button
+                                    type="button"
+                                    className="form-link"
+                                    onClick={() => navigate("/register")}
+                                    style={{ background: "none", border: "none", padding: 0, font: "inherit", cursor: "pointer" }}
+                                >
+                                    Sign up
+                                </button>
+                            </span>
+                        ) : (
+                            <span>
+                                Already have an account?{" "}
+                                <button
+                                    type="button"
+                                    className="form-link"
+                                    onClick={() => navigate("/login")}
+                                    style={{ background: "none", border: "none", padding: 0, font: "inherit", cursor: "pointer" }}
+                                >
+                                    Log in
+                                </button>
+                            </span>
+                        )}
+                    </div>
                 </form>
             </main>
-            <Footer /> {/* Add this line */}
+            <Footer />
         </div>
     );
 }
