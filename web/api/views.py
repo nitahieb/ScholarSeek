@@ -68,6 +68,7 @@ class PubmedSearchView(APIView):
                 cli_args,
                 capture_output=True,
                 text=True,
+                encoding="utf-8",
                 check=True
             )
             output = result.stdout
