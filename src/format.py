@@ -18,11 +18,11 @@ def overviewFormat(articles):
 |--------|-------------|
 """
         for a in article.people:
-            md += f"| {a.firstName +' '+ a.lastName} | {a.affiliation} |\n"
+            md += f"| {a.firstName} {a.lastName} | {a.affiliation} |\n"
         if article.emails:
             md += "\n**Emails:** "
             md += ", ".join(article.emails)
-            md+= "\n"
+            md += "\n"
     return md
 
 def emailFormat(emails):

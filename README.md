@@ -81,7 +81,6 @@ python main.py "cancer immunotherapy" -s date
 
 Sort articles by relevance, date, or other supported PubMed sort options.
 
-**Filter by email (optional):**
 
 ```bash
 python main.py "cancer immunotherapy" -e example@email.com
