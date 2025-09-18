@@ -2,13 +2,46 @@
 
 **Know a topic? Pull up articles. Meet authors. Make contact.**
 
-Scholar Seek will help you quickly find research papers on any topic and gives you author contact info so you can reach out faster.
+Scholar Seek is a modern web application that helps researchers quickly find research papers on any topic and provides author contact information for easy collaboration.
+
+![Scholar Seek Web Interface](https://github.com/user-attachments/assets/29e0dca0-2be9-40b6-ac7c-122956a26936)
+
+## 🌐 Web Application
+
+The primary way to use Scholar Seek is through our intuitive web interface. Simply search for any research topic and get instant access to relevant PubMed articles, author details, and contact information.
+
+**Features:**
+- Clean, modern interface with user authentication  
+- Real-time PubMed search with instant results
+- Author contact information extraction
+- Multiple output formats (overview and email lists)
+- Advanced filtering and sorting options
+
+---
+
+## 🚀 Running the Web App Locally
+
+### Frontend (React + TypeScript)
+```bash
+cd frontend
+npm install
+npm run dev
+```
+The frontend will be available at `http://localhost:5173`
+
+### Backend (Django + REST API)
+```bash
+poetry install
+cd backend
+python manage.py runserver
+```
+The backend API will be available at `http://localhost:8000`
 
 ---
 
 ##  What Is It
 
- Type in “cancer immunotherapy” and see titles, authors, affiliations, and emails. No more fumbling through PubMed pages manually.
+Type in "cancer immunotherapy" and see titles, authors, affiliations, and emails. No more fumbling through PubMed pages manually.
 
 ---
 
@@ -45,9 +78,9 @@ You can interact with Scholar Seek directly from GitHub using the provided GitHu
 
 ---
 
-## How to Use the script
+## How to Use the CLI Script
 
-Once downloaded, you can run `Scholar Seek` directly from your terminal.
+You can also run Scholar Seek as a command-line tool directly from your terminal.
 
 **Basic search:**
 
@@ -123,4 +156,3 @@ This will analyze your project and display any style or linting issues.
 **Recommended:** Use the [Ruff VS Code extension](https://marketplace.visualstudio.com/items?itemName=charliermarsh.ruff) for inline linting and autofix suggestions while editing your code.
 
 ---
-
