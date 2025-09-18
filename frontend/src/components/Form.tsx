@@ -37,15 +37,27 @@ function Form({ route, method }: { route: string; method: string }) {
             } else {
                 navigate("/login");
             }
-        } catch (error: any) {
+        } catch (error: unknown) {
+            const errorData = error as { 
+                response?: { 
+                    data?: { 
+                        username?: string[];
+                        detail?: string;
+                    } 
+                };
+                message?: string;
+            };
             if (
                 method === "register" &&
-                error?.response?.data?.username &&
-                error.response.data.username[0].includes("already exists")
+                errorData?.response?.data?.username &&
+                errorData.response.data.username[0].includes("already exists")
             ) {
                 setErrorMsg("An account with that username already exists.");
             } else {
-                setErrorMsg("Error: " + (error?.response?.data?.detail || error.message));
+                const errorMessage = errorData?.response?.data?.detail || 
+                                   errorData?.message || 
+                                   'An unknown error occurred';
+                setErrorMsg("Error: " + errorMessage);
             }
         } finally {
             setLoading(false);

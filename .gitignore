@@ -12,13 +12,22 @@ build/
 
 # Poetry
 .venv/
-poetry.lock
 
 # Django
 web/web/__pycache__/*
 web/api/__pycache__/*
 web/api/migrations/__pycache__/*
 web/db.sqlite3
+backend/db.sqlite3
+backend/staticfiles/
+backend/media/
+backend/logs/
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.development
 
 # Coverage/test
 .coverage
@@ -33,11 +42,18 @@ web/frontend/dist/
 web/frontend/.env
 web/frontend/.tmp/
 web/frontend/.vite/
+frontend/node_modules/
+frontend/dist/
+frontend/.env.local
 
 # VSCode/IDE
 .vscode/
 .idea/
 .DS_Store
+
+# Production files
+/backups/
+ssl/
 
 # Misc
 *.swp

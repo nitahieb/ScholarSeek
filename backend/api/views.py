@@ -3,6 +3,7 @@ import sys
 import os
 import logging
 from django.contrib.auth.models import User
+from django.utils import timezone
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
@@ -86,4 +87,41 @@ class PubmedSearchView(APIView):
             "result": output,
             "search": serializer.data
         }, status=status.HTTP_200_OK)
+
+
+class HealthCheckView(APIView):
+    """
+    Health check endpoint for monitoring and load balancers
+    """
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        """
+        Return application health status
+        """
+        try:
+            # Check database connectivity
+            from django.db import connection
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT 1")
+
+            # Check if we can import and access key modules
+            from django.contrib.auth.models import User
+            User.objects.count()
+
+            return Response({
+                "status": "healthy",
+                "timestamp": timezone.now().isoformat(),
+                "version": "0.2.0",
+                "database": "connected",
+                "environment": os.environ.get('DJANGO_ENVIRONMENT', 'development')
+            }, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            logging.error("Health check failed: %s", str(e))
+            return Response({
+                "status": "unhealthy",
+                "timestamp": timezone.now().isoformat(),
+                "error": str(e)
+            }, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 

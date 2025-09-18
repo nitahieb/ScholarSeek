@@ -131,6 +131,44 @@ You can mix and match options to customize your search results.
 
 ---
 
+## 🏭 Production Deployment
+
+ScholarSeek is production-ready with comprehensive security, performance, and monitoring features.
+
+### Quick Production Setup
+
+1. **Build for production**:
+   ```bash
+   ./scripts/build-production.sh
+   ```
+
+2. **Configure environment**:
+   ```bash
+   cp backend/.env.production.template backend/.env.production
+   # Edit with your production settings
+   ```
+
+3. **Deploy**:
+   ```bash
+   export DJANGO_ENVIRONMENT=production
+   ./scripts/deploy-production.sh
+   ```
+
+### Production Features
+
+- ✅ **Security**: HTTPS, HSTS, secure cookies, CORS protection
+- ✅ **Performance**: Static file optimization, database connection pooling
+- ✅ **Monitoring**: Health checks, structured logging, error reporting
+- ✅ **Scalability**: Docker support, load balancer ready
+- ✅ **Reliability**: Automated backups, disaster recovery procedures
+
+### Documentation
+
+- **[Deployment Guide](DEPLOYMENT.md)** - Complete production setup instructions
+- **[Production Checklist](PRODUCTION_CHECKLIST.md)** - Comprehensive production readiness verification
+
+---
+
 ##  Contributing
 
 We welcome your contributions! Please check out our [`CONTRIBUTING.md`](CONTRIBUTING.md) for guidelines on how to submit pull requests, ensure checks pass, and request approvals.

@@ -2,22 +2,13 @@ import { Navigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import api from "../api";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
-import {type JSX, useState, useEffect } from "react";
+import {type JSX, useState, useEffect, useCallback } from "react";
 
 function ProtectedRoute({ children }: { children: JSX.Element }) {
 
     const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
-    useEffect(() => {
-        authenticate().catch((error) => {
-            setIsAuthenticated(false);
-            console.error("Error during authentication:", error);
-        });
-    }, []);
-
-
-
-    const refreshToken = async () => {
+    const refreshToken = useCallback(async () => {
         const refreshToken = localStorage.getItem(REFRESH_TOKEN);
         try {
             const res = await api.post("api/token/refresh/", { 
@@ -34,25 +25,36 @@ function ProtectedRoute({ children }: { children: JSX.Element }) {
             console.error("Error refreshing token:", error);
             setIsAuthenticated(false);
         }
+    }, []);
 
-    };
-
-    const authenticate = async () => {
-        const accessToken = localStorage.getItem(ACCESS_TOKEN);
-        if (!accessToken) {
+    const authenticate = useCallback(async () => {
+        setIsAuthenticated(null);
+        try {
+            const token = localStorage.getItem(ACCESS_TOKEN);
+            if (!token) {
+                setIsAuthenticated(false);
+                return;
+            }
+            const decoded = jwtDecode(token);
+            const tokenExpiration = decoded.exp;
+            const now = Date.now() / 1000;
+            
+            if (tokenExpiration && tokenExpiration < now) {
+                await refreshToken();
+            } else {
+                setIsAuthenticated(true);
+            }
+        } catch (error) {
             setIsAuthenticated(false);
-            return;
         }
-        const decodedAccessToken: { exp: number } = jwtDecode(accessToken);
-        const tokenExpirationTime = decodedAccessToken.exp * 1000;
-        const currentTime = Date.now();
+    }, [refreshToken]);
 
-        if (currentTime >= tokenExpirationTime) {
-            await refreshToken();
-        } else {
-            setIsAuthenticated(true);
-        }
-    };
+    useEffect(() => {
+        authenticate().catch((error) => {
+            setIsAuthenticated(false);
+            console.error("Error during authentication:", error);
+        });
+    }, [authenticate]);
 
     if (isAuthenticated === null) {
         return <div>Loading...</div>;
