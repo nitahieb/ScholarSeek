@@ -1,6 +1,6 @@
 [project]
-name = "pubmed-author-finder"
-version = "0.1.0"
+name = "ScholarSeek"
+version = "0.2.0"
 description = "Find published researchers on pubmed"
 
 authors = [{name="Nitahi Escolar Bach", email="nitahieb@gmail.com"}]

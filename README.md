@@ -1,8 +1,8 @@
-# PubMed Author Finder
+# Scholar Seek
 
 **Know a topic? Pull up articles. Meet authors. Make contact.**
 
-PubMed Author Finder helps you quickly find research papers on any topic and gives you author contact info so you can reach out faster.
+Scholar Seek will help you quickly find research papers on any topic and gives you author contact info so you can reach out faster.
 
 ---
 
@@ -14,7 +14,7 @@ PubMed Author Finder helps you quickly find research papers on any topic and giv
 
 ## Using the GitHub Action
 
-You can interact with PubMed Author Finder directly from GitHub using the provided GitHub Action workflow. This is useful for running searches and retrieving results without setting up the app locally.
+You can interact with Scholar Seek directly from GitHub using the provided GitHub Action workflow. This is useful for running searches and retrieving results without setting up the app locally.
 
 ### How to Trigger
 
@@ -47,7 +47,7 @@ You can interact with PubMed Author Finder directly from GitHub using the provid
 
 ## How to Use the script
 
-Once downloaded, you can run `PubMedSearch` directly from your terminal.
+Once downloaded, you can run `Scholar Seek` directly from your terminal.
 
 **Basic search:**
 
