@@ -9,6 +9,7 @@ build/
 *.so
 *.db
 *.sqlite3
+.env
 
 # Poetry
 .venv/
