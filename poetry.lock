@@ -518,7 +518,22 @@ files = [
 [package.dependencies]
 pytest = "8.3.5"
 
+[[package]]
+name = "whitenoise"
+version = "6.11.0"
+description = "Radically simplified static file serving for WSGI applications"
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "whitenoise-6.11.0-py3-none-any.whl", hash = "sha256:b2aeb45950597236f53b5342b3121c5de69c8da0109362aee506ce88e022d258"},
+    {file = "whitenoise-6.11.0.tar.gz", hash = "sha256:0f5bfce6061ae6611cd9396a8231e088722e4fc67bc13a111be74c738d99375f"},
+]
+
+[package.extras]
+brotli = ["brotli"]
+
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.10"
-content-hash = "d1654ed4190474b38291d5a25a88eec2b978fd7bcd8251b738f61c8957a9677a"
+content-hash = "27da99e5ff4b0fc031647a53addde25254ac6410914b33268ecffe53c95853f4"
