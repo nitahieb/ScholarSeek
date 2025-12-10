@@ -77,43 +77,15 @@ function Form({ route, method }: { route: string; method: string }) {
                         />
                     </div>
                     {method === "register" && (
-                        <>
-                            <div className="form-group">
-                                <label htmlFor="email">Email</label>
-                                <input
-                                    className="form-input"
-                                    type="email"
-                                    id="email"
-                                    placeholder="Email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    required
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="confirmPassword">Confirm Password</label>
-                                <input
-                                    className="form-input"
-                                    type="password"
-                                    id="confirmPassword"
-                                    placeholder="Confirm Password"
-                                    value={confirmPassword}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
-                                    required
-                                />
-                            </div>
-                        </>
-                    )}
-                    {method === "register" && (
                         <div className="form-group">
-                            <label htmlFor="registrationCode">Registration Code</label>
+                            <label htmlFor="email">Email</label>
                             <input
                                 className="form-input"
-                                type="text"
-                                id="registrationCode"
-                                placeholder="Registration Code"
-                                value={registrationCode}
-                                onChange={(e) => setRegistrationCode(e.target.value)}
+                                type="email"
+                                id="email"
+                                placeholder="Email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                                 required
                             />
                         </div>
@@ -130,6 +102,34 @@ function Form({ route, method }: { route: string; method: string }) {
                             required
                         />
                     </div>
+                    {method === "register" && (
+                        <>
+                            <div className="form-group">
+                                <label htmlFor="confirmPassword">Confirm Password</label>
+                                <input
+                                    className="form-input"
+                                    type="password"
+                                    id="confirmPassword"
+                                    placeholder="Confirm Password"
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="registrationCode">Registration Code</label>
+                                <input
+                                    className="form-input"
+                                    type="text"
+                                    id="registrationCode"
+                                    placeholder="Registration Code"
+                                    value={registrationCode}
+                                    onChange={(e) => setRegistrationCode(e.target.value)}
+                                    required
+                                />
+                            </div>
+                        </>
+                    )}
                     <button className="form-button" type="submit" disabled={loading}>
                         {loading ? "Loading..." : name}
                     </button>
