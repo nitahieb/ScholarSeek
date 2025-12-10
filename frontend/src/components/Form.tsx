@@ -12,6 +12,7 @@ function Form({ route, method }: { route: string; method: string }) {
     const [email, setEmail] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [password, setPassword] = useState("");
+    const [registrationCode, setRegistrationCode] = useState("");
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
     const navigate = useNavigate();
@@ -29,7 +30,11 @@ function Form({ route, method }: { route: string; method: string }) {
         }
 
         try {
-            const response = await api.post(route, { username, password, email });
+            const data: any = { username, password, email };
+            if (method === "register") {
+                data.registration_code = registrationCode;
+            }
+            const response = await api.post(route, data);
             if (method === "login") {
                 localStorage.setItem(ACCESS_TOKEN, response.data.access);
                 localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
@@ -98,6 +103,20 @@ function Form({ route, method }: { route: string; method: string }) {
                                 />
                             </div>
                         </>
+                    )}
+                    {method === "register" && (
+                        <div className="form-group">
+                            <label htmlFor="registrationCode">Registration Code</label>
+                            <input
+                                className="form-input"
+                                type="text"
+                                id="registrationCode"
+                                placeholder="Registration Code"
+                                value={registrationCode}
+                                onChange={(e) => setRegistrationCode(e.target.value)}
+                                required
+                            />
+                        </div>
                     )}
                     <div className="form-group">
                         <label htmlFor="password">Password</label>
