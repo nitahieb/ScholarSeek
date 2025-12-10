@@ -1,0 +1,60 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: scholarseek_backend
+    networks:
+      default:
+        aliases:
+          - backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - DJANGO_SETTINGS_MODULE=web.settings
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+        reservations:
+          memory: 256M
+          cpus: '0.25'
+
+  web:  # combined frontend + nginx
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: scholarseek_web
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    networks:
+      default:
+        aliases:
+          - web
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.25'
+        reservations:
+          memory: 128M
+          cpus: '0.1'
+    # For production SSL certificates, mount them as volumes:
+    # volumes:
+    #   - ./nginx/certs:/etc/nginx/certs:ro
+
+networks:
+  default:
+    name: scholarseek_net

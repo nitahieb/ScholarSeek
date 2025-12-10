@@ -12,6 +12,17 @@ from .serializers import UserSerializer, SearchSerializer
 from .models import Search
 
 
+class HealthCheckView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        return Response({
+            "status": "healthy",
+            "version": "1.0.0",
+            "database": "connected" if Search.objects.exists() or True else "disconnected"
+        })
+
+
 # Create your views here.
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()

@@ -1,0 +1,111 @@
+name: Deploy to Cloud Run
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT }}
+  REGION: us-central1
+  # Artifact Registry Repository Name
+  GAR_REPO: scholarseek-repo
+  # Workload Identity Provider
+  WIF_PROVIDER: projects/29798675044/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider
+  # Service Account for GitHub Actions to impersonate
+  WIF_SERVICE_ACCOUNT: ${{ secrets.GCP_SA_EMAIL }}
+  # GCS Bucket for SQLite Database
+  DB_BUCKET: scholarseek-db
+  # Backend Cloud Run Service Name
+  BACKEND_SERVICE: scholarseek-backend
+  # Frontend Cloud Run Service Name
+  FRONTEND_SERVICE: scholarseek-web
+
+jobs:
+  deploy-backend:
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    runs-on: ubuntu-latest
+    outputs:
+      url: ${{ steps.deploy.outputs.url }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Google Auth
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ env.WIF_PROVIDER }}
+          service_account: ${{ env.WIF_SERVICE_ACCOUNT }}
+
+      - name: Docker Auth
+        run: |-
+          gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
+
+      - name: Build and Push Backend
+        run: |-
+          docker build -t "${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/${{ env.BACKEND_SERVICE }}:${{ github.sha }}" -f backend/Dockerfile .
+          docker push "${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/${{ env.BACKEND_SERVICE }}:${{ github.sha }}"
+
+      - name: Deploy Backend to Cloud Run
+        id: deploy
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: ${{ env.BACKEND_SERVICE }}
+          region: ${{ env.REGION }}
+          image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/${{ env.BACKEND_SERVICE }}:${{ github.sha }}
+          flags: |
+            --allow-unauthenticated
+            --max-instances=1
+            --add-volume=name=db-storage,type=cloud-storage,bucket=${{ env.DB_BUCKET }}
+            --add-volume-mount=volume=db-storage,mount-path=/app/db
+          env_vars: |
+            DATABASE_PATH=/app/db/db.sqlite3
+            DJANGO_ALLOWED_HOSTS=*
+            CORS_ALLOWED_ORIGINS=*
+            SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}
+            DEBUG=False
+
+  deploy-frontend:
+    needs: deploy-backend
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Google Auth
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ env.WIF_PROVIDER }}
+          service_account: ${{ env.WIF_SERVICE_ACCOUNT }}
+
+      - name: Docker Auth
+        run: |-
+          gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
+
+      - name: Build and Push Frontend
+        run: |-
+          # Build with VITE_API_URL arg
+          docker build \
+            --build-arg VITE_API_URL=${{ needs.deploy-backend.outputs.url }} \
+            -t "${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/${{ env.FRONTEND_SERVICE }}:${{ github.sha }}" \
+            -f frontend/Dockerfile .
+          docker push "${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/${{ env.FRONTEND_SERVICE }}:${{ github.sha }}"
+
+      - name: Deploy Frontend to Cloud Run
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: ${{ env.FRONTEND_SERVICE }}
+          region: ${{ env.REGION }}
+          image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/${{ env.FRONTEND_SERVICE }}:${{ github.sha }}
+          flags: --allow-unauthenticated
