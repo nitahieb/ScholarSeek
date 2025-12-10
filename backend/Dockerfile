@@ -16,7 +16,10 @@ RUN pip install --no-cache-dir poetry
 RUN poetry config virtualenvs.in-project true && poetry install --no-root --without dev --no-cache
 
 # Copy backend source code
+# Copy backend source code
 COPY backend/ /app/backend
+# Copy CLI source code (needed for search functionality)
+COPY cli/ /app/cli
 
 # Change ownership to non-root user
 RUN chown -R appuser:appuser /app

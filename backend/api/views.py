@@ -75,16 +75,21 @@ class PubmedSearchView(APIView):
             return Response({"error": "Invalid sort option"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            result = subprocess.run(
-                cli_args,
-                capture_output=True,
-                text=True,
-                encoding="utf-8",
-                check=True
-            )
-            output = result.stdout
-        except subprocess.CalledProcessError as e:
-            logging.error("PubmedSearch subprocess error: %s", e.stderr or str(e))
+            # Dynamically add cli folder to python path so we can import modules from it
+            cli_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../cli'))
+            if cli_path not in sys.path:
+                sys.path.append(cli_path)
+            
+            # Import services dynamically or at top level (dynamic here to ensure path is set)
+            from services import getSummary, getEmails # type: ignore
+
+            if mode == "overview":
+                output = getSummary(searchterm, sortby, email, searchnumber)
+            else: # emails
+                output = getEmails(searchterm, sortby, email, searchnumber)
+
+        except Exception as e:
+            logging.error("PubmedSearch execution error: %s", str(e))
             return Response({"error": "An internal error occurred while processing your request."},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
