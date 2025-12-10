@@ -4,7 +4,6 @@ import { PubMedAPIService } from '../services/api';
 import SearchForm from './SearchForm';
 import SearchResults from './SearchResults';
 import ErrorDisplay from './ErrorDisplay';
-import './PubMedSearch.css';
 
 const PubMedSearch: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -27,13 +26,17 @@ const PubMedSearch: React.FC = () => {
   };
 
   return (
-    <div className="form-card">
-      <SearchForm 
-        onSearch={handleSearch} 
-        loading={loading}
-        outputOptions={OUTPUT_OPTIONS}
-        sortOptions={SORT_OPTIONS}
-      />
+    <div style={{ width: '100%', maxWidth: '800px' }}>
+      <div className="card" style={{ marginBottom: 'var(--spacing-xl)' }}>
+        <h2 style={{ marginBottom: 'var(--spacing-md)' }}>Search Articles</h2>
+        <SearchForm
+          onSearch={handleSearch}
+          loading={loading}
+          outputOptions={OUTPUT_OPTIONS}
+          sortOptions={SORT_OPTIONS}
+        />
+      </div>
+
       {error && <ErrorDisplay message={error} />}
       {results && <SearchResults results={results} />}
     </div>

@@ -31,78 +31,90 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearch, loading, outputOption
   };
 
   return (
-    <div className="search-section">
-      <form onSubmit={handleSubmit} className="search-form">
-        <div className="form-group">
-          <label htmlFor="searchterm">Search Term</label>
-          <input
-            type="text"
-            id="searchterm"
-            name="searchterm"
-            value={formData.searchterm}
+    <form onSubmit={handleSubmit}>
+      <div className="input-group">
+        <label className="input-label" htmlFor="searchterm">Search Term</label>
+        <input
+          className="input-field"
+          type="text"
+          id="searchterm"
+          name="searchterm"
+          value={formData.searchterm}
+          onChange={handleInputChange}
+          placeholder="e.g., cancer immunotherapy"
+          required
+        />
+      </div>
+
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+        gap: 'var(--spacing-md)',
+        marginBottom: 'var(--spacing-lg)'
+      }}>
+        <div className="input-group" style={{ marginBottom: 0 }}>
+          <label className="input-label" htmlFor="mode">Output Mode</label>
+          <select
+            className="input-field"
+            id="mode"
+            name="mode"
+            value={formData.mode}
             onChange={handleInputChange}
-            placeholder="e.g., cancer immunotherapy"
-            required
+          >
+            {outputOptions.map(option => (
+              <option key={option} value={option}>
+                {option.charAt(0).toUpperCase() + option.slice(1)}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="input-group" style={{ marginBottom: 0 }}>
+          <label className="input-label" htmlFor="searchnumber">Number of Results</label>
+          <input
+            className="input-field"
+            type="number"
+            id="searchnumber"
+            name="searchnumber"
+            value={formData.searchnumber}
+            onChange={handleInputChange}
+            min="1"
+            max="100"
           />
         </div>
 
-        <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="mode">Output Mode</label>
-            <select
-              id="mode"
-              name="mode"
-              value={formData.mode}
-              onChange={handleInputChange}
-            >
-              {outputOptions.map(option => (
-                <option key={option} value={option}>
-                  {option.charAt(0).toUpperCase() + option.slice(1)}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="searchnumber">Number of Results</label>
-            <input
-              type="number"
-              id="searchnumber"
-              name="searchnumber"
-              value={formData.searchnumber}
-              onChange={handleInputChange}
-              min="1"
-              max="100"
-            />
-          </div>
+        <div className="input-group" style={{ marginBottom: 0 }}>
+          <label className="input-label" htmlFor="sortby">Sort By</label>
+          <select
+            className="input-field"
+            id="sortby"
+            name="sortby"
+            value={formData.sortby}
+            onChange={handleInputChange}
+          >
+            {sortOptions.map(option => (
+              <option key={option} value={option}>
+                {option.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+              </option>
+            ))}
+          </select>
         </div>
+      </div>
 
-        <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="sortby">Sort By</label>
-            <select
-              id="sortby"
-              name="sortby"
-              value={formData.sortby}
-              onChange={handleInputChange}
-            >
-              {sortOptions.map(option => (
-                <option key={option} value={option}>
-                  {option.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        <button type="submit" className="search-btn" disabled={loading}>
-          <span className="btn-text">
-            {loading ? 'Searching...' : 'Search PubMed'}
-          </span>
-          {loading && <span className="loading-spinner">⏳</span>}
-        </button>
-      </form>
-    </div>
+      <button
+        type="submit"
+        className="btn btn-primary"
+        disabled={loading}
+        style={{ width: '100%' }}
+      >
+        {loading ? (
+          <>
+            <span className="loading-spinner"></span>
+            Searching...
+          </>
+        ) : 'Search PubMed'}
+      </button>
+    </form>
   );
 };
 
