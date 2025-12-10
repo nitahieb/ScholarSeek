@@ -30,5 +30,5 @@ RUN poetry run python manage.py collectstatic --noinput
 # Expose port for Gunicorn (internal to Docker network)
 EXPOSE 8080
 
-# Run Gunicorn with dynamic port
-CMD ["sh", "-c", "poetry run gunicorn web.wsgi:application --bind 0.0.0.0:${PORT:-8080} --workers 3"]
+# Run Gunicorn with dynamic port run migrations first
+CMD ["sh", "-c", "poetry run python manage.py migrate && poetry run gunicorn web.wsgi:application --bind 0.0.0.0:${PORT:-8080} --workers 3"]
