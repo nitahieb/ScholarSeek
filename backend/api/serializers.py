@@ -7,7 +7,6 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'username', 'email', 'password', 'registration_code']
         extra_kwargs = {'password': {'write_only': True}}
-    
     registration_code = serializers.CharField(write_only=True)
 
     def validate_registration_code(self, value):
