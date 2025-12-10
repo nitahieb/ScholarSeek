@@ -5,6 +5,7 @@ import Register from './pages/Register'
 import Home from './pages/Home'
 import NotFound from './pages/NotFound'
 import ProtectedRoute from './components/ProtectedRoute'
+import Layout from './components/Layout'
 
 
 function Logout(): React.JSX.Element {
@@ -16,6 +17,15 @@ function Logout(): React.JSX.Element {
 function RegisterAndLogout(): React.JSX.Element {
   localStorage.removeItem("access_token");
   localStorage.removeItem("refresh_token");
+  return <RegisterAndLogoutComponent />;
+}
+
+// Helper to keep logic clean
+function RegisterAndLogoutComponent() {
+  React.useEffect(() => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+  }, []);
   return <Register />;
 }
 
@@ -23,20 +33,23 @@ function RegisterAndLogout(): React.JSX.Element {
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<RegisterAndLogout />} />
-        <Route path="/logout" element={<Logout />} />
-        <Route path="/" element={
-          <ProtectedRoute>
-            <Home />
-          </ProtectedRoute>
-        } />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <Layout>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<RegisterAndLogout />} />
+          <Route path="/logout" element={<Logout />} />
+          <Route path="/" element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          } />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Layout>
     </BrowserRouter>
 
   )
 }
 
 export default App
+

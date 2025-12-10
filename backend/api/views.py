@@ -1,4 +1,3 @@
-import subprocess
 import sys
 import os
 import logging
@@ -10,6 +9,17 @@ from rest_framework.response import Response
 
 from .serializers import UserSerializer, SearchSerializer
 from .models import Search
+
+
+class HealthCheckView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        return Response({
+            "status": "healthy",
+            "version": "1.0.0",
+            "database": "connected" if Search.objects.exists() or True else "disconnected"
+        })
 
 
 # Create your views here.
@@ -46,16 +56,7 @@ class PubmedSearchView(APIView):
         if not searchterm:
             return Response({"error": "Missing search term"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Build CLI command
-        cli_args = [
-            sys.executable,
-            os.path.abspath(os.path.join(os.path.dirname(__file__), '../../cli/main.py')),
-            f'"{searchterm}"',
-            "-m", mode,
-            "-e", email,
-            "-n", str(searchnumber),
-            "-s", sortby
-        ]
+
         allowed_modes = {"overview", "emails"}
         allowed_sort = {"relevance", "pub_date", "Author", "JournalName"}
         if mode not in allowed_modes:
@@ -64,16 +65,21 @@ class PubmedSearchView(APIView):
             return Response({"error": "Invalid sort option"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            result = subprocess.run(
-                cli_args,
-                capture_output=True,
-                text=True,
-                encoding="utf-8",
-                check=True
-            )
-            output = result.stdout
-        except subprocess.CalledProcessError as e:
-            logging.error("PubmedSearch subprocess error: %s", e.stderr or str(e))
+            # Dynamically add cli folder to python path so we can import modules from it
+            cli_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../cli'))
+            if cli_path not in sys.path:
+                sys.path.append(cli_path)
+
+            # Import services dynamically or at top level (dynamic here to ensure path is set)
+            from services import getSummary, getEmails # type: ignore
+
+            if mode == "overview":
+                output = getSummary(searchterm, sortby, email, searchnumber)
+            else: # emails
+                output = getEmails(searchterm, sortby, email, searchnumber)
+
+        except Exception as e:
+            logging.error("PubmedSearch execution error: %s", str(e))
             return Response({"error": "An internal error occurred while processing your request."},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 

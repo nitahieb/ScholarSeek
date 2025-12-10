@@ -2,16 +2,14 @@ import { useState } from "react";
 import api from "../api";
 import { useNavigate } from "react-router-dom";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
-import "../styles/Form.css";
-import Header from "./Header";
-import Footer from "./Footer";
-import "./PubMedSearch.css";
+import axios from "axios";
 
 function Form({ route, method }: { route: string; method: string }) {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [password, setPassword] = useState("");
+    const [registrationCode, setRegistrationCode] = useState("");
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
     const navigate = useNavigate();
@@ -29,7 +27,11 @@ function Form({ route, method }: { route: string; method: string }) {
         }
 
         try {
-            const response = await api.post(route, { username, password, email });
+            const data: Record<string, string> = { username, password, email };
+            if (method === "register") {
+                data.registration_code = registrationCode;
+            }
+            const response = await api.post(route, data);
             if (method === "login") {
                 localStorage.setItem(ACCESS_TOKEN, response.data.access);
                 localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
@@ -37,113 +39,167 @@ function Form({ route, method }: { route: string; method: string }) {
             } else {
                 navigate("/login");
             }
-        } catch (error: any) {
-            if (
-                method === "register" &&
-                error?.response?.data?.username &&
-                error.response.data.username[0].includes("already exists")
-            ) {
-                setErrorMsg("An account with that username already exists.");
-            } else {
-                setErrorMsg("Error: " + (error?.response?.data?.detail || error.message));
+        } catch (error) {
+            let errorMessage = "An unknown error occurred.";
+            if (axios.isAxiosError(error)) {
+                if (method === "register" && error.response?.data?.username) {
+                    const usernameError = error.response.data.username[0];
+                    if (usernameError.includes("already exists")) {
+                        errorMessage = "An account with that username already exists.";
+                    }
+                } else if (error.response?.data?.detail) {
+                    errorMessage = "Error: " + error.response.data.detail;
+                } else if (error.message) {
+                    errorMessage = "Error: " + error.message;
+                }
+            } else if (error instanceof Error) {
+                errorMessage = "Error: " + error.message;
             }
+            setErrorMsg(errorMessage);
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="pubmed-search">
-            <Header />
-            <main className="main-content">
-                <form onSubmit={handleSubmit} className="form-container">
-                    <h1>{name}</h1>
-                    {errorMsg && <div className="form-error">{errorMsg}</div>}
-                    <div className="form-group">
-                        <label htmlFor="username">Username</label>
+        <div className="card" style={{ maxWidth: '400px', width: '100%' }}>
+            <h1 style={{ textAlign: 'center', marginBottom: 'var(--spacing-lg)' }}>{name}</h1>
+
+            <form onSubmit={handleSubmit}>
+                {errorMsg && (
+                    <div style={{
+                        backgroundColor: '#FEF2F2',
+                        color: 'var(--color-error)',
+                        padding: 'var(--spacing-sm)',
+                        borderRadius: 'var(--radius-md)',
+                        marginBottom: 'var(--spacing-md)',
+                        fontSize: '0.875rem'
+                    }}>
+                        {errorMsg}
+                    </div>
+                )}
+
+                <div className="input-group">
+                    <label className="input-label" htmlFor="username">Username</label>
+                    <input
+                        className="input-field"
+                        type="text"
+                        id="username"
+                        placeholder="Username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        required
+                    />
+                </div>
+
+                {method === "register" && (
+                    <div className="input-group">
+                        <label className="input-label" htmlFor="email">Email</label>
                         <input
-                            className="form-input"
-                            type="text"
-                            id="username"
-                            placeholder="Username"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
+                            className="input-field"
+                            type="email"
+                            id="email"
+                            placeholder="Email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             required
                         />
                     </div>
-                    {method === "register" && (
-                        <>
-                            <div className="form-group">
-                                <label htmlFor="email">Email</label>
-                                <input
-                                    className="form-input"
-                                    type="email"
-                                    id="email"
-                                    placeholder="Email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    required
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="confirmPassword">Confirm Password</label>
-                                <input
-                                    className="form-input"
-                                    type="password"
-                                    id="confirmPassword"
-                                    placeholder="Confirm Password"
-                                    value={confirmPassword}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
-                                    required
-                                />
-                            </div>
-                        </>
+                )}
+
+                <div className="input-group">
+                    <label className="input-label" htmlFor="password">Password</label>
+                    <input
+                        className="input-field"
+                        type="password"
+                        id="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+                </div>
+
+                {method === "register" && (
+                    <>
+                        <div className="input-group">
+                            <label className="input-label" htmlFor="confirmPassword">Confirm Password</label>
+                            <input
+                                className="input-field"
+                                type="password"
+                                id="confirmPassword"
+                                placeholder="Confirm Password"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div className="input-group">
+                            <label className="input-label" htmlFor="registrationCode">Registration Code</label>
+                            <input
+                                className="input-field"
+                                type="text"
+                                id="registrationCode"
+                                placeholder="Registration Code"
+                                value={registrationCode}
+                                onChange={(e) => setRegistrationCode(e.target.value)}
+                                required
+                            />
+                        </div>
+                    </>
+                )}
+
+                <button
+                    className="btn btn-primary"
+                    type="submit"
+                    disabled={loading}
+                    style={{ width: '100%', marginTop: 'var(--spacing-sm)' }}
+                >
+                    {loading ? "Loading..." : name}
+                </button>
+
+                <div style={{ marginTop: "var(--spacing-lg)", textAlign: "center", fontSize: '0.875rem' }}>
+                    {method === "login" ? (
+                        <span>
+                            New to PubMed Author Finder?{" "}
+                            <button
+                                type="button"
+                                onClick={() => navigate("/register")}
+                                style={{
+                                    background: "none",
+                                    border: "none",
+                                    padding: 0,
+                                    font: "inherit",
+                                    cursor: "pointer",
+                                    color: 'var(--color-primary)',
+                                    fontWeight: 600
+                                }}
+                            >
+                                Sign up
+                            </button>
+                        </span>
+                    ) : (
+                        <span>
+                            Already have an account?{" "}
+                            <button
+                                type="button"
+                                onClick={() => navigate("/login")}
+                                style={{
+                                    background: "none",
+                                    border: "none",
+                                    padding: 0,
+                                    font: "inherit",
+                                    cursor: "pointer",
+                                    color: 'var(--color-primary)',
+                                    fontWeight: 600
+                                }}
+                            >
+                                Log in
+                            </button>
+                        </span>
                     )}
-                    <div className="form-group">
-                        <label htmlFor="password">Password</label>
-                        <input
-                            className="form-input"
-                            type="password"
-                            id="password"
-                            placeholder="Password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <button className="form-button" type="submit" disabled={loading}>
-                        {loading ? "Loading..." : name}
-                    </button>
-                    <div style={{ marginTop: "18px", textAlign: "center" }}>
-                        {method === "login" ? (
-                            <span>
-                                New to PubMed Author Finder?{" "}
-                                <button
-                                    type="button"
-                                    className="form-link"
-                                    onClick={() => navigate("/register")}
-                                    style={{ background: "none", border: "none", padding: 0, font: "inherit", cursor: "pointer" }}
-                                >
-                                    Sign up
-                                </button>
-                            </span>
-                        ) : (
-                            <span>
-                                Already have an account?{" "}
-                                <button
-                                    type="button"
-                                    className="form-link"
-                                    onClick={() => navigate("/login")}
-                                    style={{ background: "none", border: "none", padding: 0, font: "inherit", cursor: "pointer" }}
-                                >
-                                    Log in
-                                </button>
-                            </span>
-                        )}
-                    </div>
-                </form>
-            </main>
-            <Footer />
+                </div>
+            </form>
         </div>
     );
 }
