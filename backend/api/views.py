@@ -1,4 +1,3 @@
-import subprocess
 import sys
 import os
 import logging
@@ -57,16 +56,7 @@ class PubmedSearchView(APIView):
         if not searchterm:
             return Response({"error": "Missing search term"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Build CLI command
-        cli_args = [
-            sys.executable,
-            os.path.abspath(os.path.join(os.path.dirname(__file__), '../../cli/main.py')),
-            f'"{searchterm}"',
-            "-m", mode,
-            "-e", email,
-            "-n", str(searchnumber),
-            "-s", sortby
-        ]
+
         allowed_modes = {"overview", "emails"}
         allowed_sort = {"relevance", "pub_date", "Author", "JournalName"}
         if mode not in allowed_modes:
@@ -79,7 +69,7 @@ class PubmedSearchView(APIView):
             cli_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../cli'))
             if cli_path not in sys.path:
                 sys.path.append(cli_path)
-            
+
             # Import services dynamically or at top level (dynamic here to ensure path is set)
             from services import getSummary, getEmails # type: ignore
 
